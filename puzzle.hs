@@ -44,7 +44,7 @@ fromFile path = do
   let asMaybes = map toMaybe oneLine
   return $ listArray ((0, 0), (8, 8)) asMaybes
     where
-      toMaybe c = if c == ' ' then Nothing else Just $ digitToInt c
+      toMaybe c = if c == '.' then Nothing else Just $ digitToInt c
 
 -- Creates a 9x9 sudoku puzzle from a list of spaces. The spaces should be
 -- indexed by row and then column, i.e. [(1, 1), (1, 2), ... (2, 1), ...].
