@@ -46,15 +46,19 @@ block puzzle (blockRow, blockCol) =
       startRow = blockRow * 3
       startCol = blockCol * 3
 
+-- Returns the block that a given space is in.
+inBlock :: RowCol -> RowCol
+inBlock (rowIndex, colIndex) = (rowIndex `div` 3, colIndex `div` 3)
+
 -- Get a list of the unique numbers in the row, column, and block that a space
 -- is in.
 rowColBlock :: Puzzle -> RowCol -> [Int]
-rowColBlock puzzle (rowIndex, colIndex) =
+rowColBlock puzzle rc@(rowIndex, colIndex) =
   sort . nub . catMaybes . concat . map elems $ [r, c, b]
     where
       r = row puzzle rowIndex
       c = col puzzle colIndex
-      b = block puzzle (rowIndex `div` 3, colIndex `div` 3)
+      b = block puzzle (inBlock rc)
 
 -- Checks whether a row, column, or block is complete.
 isComplete :: Array RowCol Space -> Bool

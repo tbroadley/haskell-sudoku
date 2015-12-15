@@ -10,7 +10,7 @@ import Data.Array
 import Data.Maybe (isJust)
 import Data.List (nub)
 
-import Puzzle (Space, RowCol, GenericPuzzle, Puzzle, fromList, row, col, block, rowColBlock)
+import Puzzle (Space, RowCol, GenericPuzzle, Puzzle, fromList, row, col, block, inBlock, rowColBlock)
 
 type Candidate = Int
 
@@ -67,4 +67,4 @@ updatePuzzle rc@(rowIndex, colIndex) value puzzle =
       filterValue (k, (v, candidates)) = (k, (v, filter (== value) candidates))
       r = row puzzle rowIndex
       c = col puzzle colIndex
-      b = block puzzle (rowIndex `div` 3, colIndex `div` 3)
+      b = block puzzle (inBlock rc)
