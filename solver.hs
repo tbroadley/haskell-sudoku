@@ -5,9 +5,9 @@ module Solver (
   toSolver
 ) where
 
-import Data.Array;
+import Data.Array
 
-import Puzzle (Space, Puzzle)
+import Puzzle (Space, Puzzle, fromList, rowColBlock)
 
 -- A type similar to Puzzle, but with a list of candidates for each space.
 type CandidatesPuzzle = Array (Int, Int) (Space, [Int])
@@ -22,9 +22,12 @@ type Solver = Puzzle -> Maybe Puzzle
 type CandidatesSolver = CandidatesPuzzle -> Maybe CandidatesPuzzle
 
 -- Adds candidates to a Puzzle, turning it into a CandidatesPuzzle.
--- TODO: write the real addCandidates function.
-addCandidates :: Puzzle -> CandidatesPuzzle
-addCandidates = fmap (\x -> (x, []))
+-- addCandidates :: Puzzle -> CandidatesPuzzle
+addCandidates puzzle = fromList $ zipWith (,) spaces candidates
+  where
+    spaces = elems puzzle
+    candidates = map getCandidates $ range ((0, 0), (8, 8))
+    getCandidates rc = filter (\n -> notElem n $ rowColBlock puzzle rc) [1..9]
 
 -- Removes lists of candidates from the spaces of a puzzle.
 removeCandidates :: CandidatesPuzzle -> Puzzle
