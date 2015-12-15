@@ -1,5 +1,5 @@
 module Solver (
-  solve
+  Solver
 ) where
 
 import Puzzle (Puzzle)
