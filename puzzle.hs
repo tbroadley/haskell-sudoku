@@ -1,4 +1,5 @@
 import Data.Array
+import Data.List (sort)
 
 type Space = Maybe Int
 
@@ -27,3 +28,7 @@ block (blockRow, blockCol) puzzle =
       blockBounds = ((startRow, startCol), (startRow + 2, startCol + 2))
       startRow = blockRow * 3
       startCol = blockCol * 3
+
+-- Checks whether a row, column, or block is complete.
+isComplete :: Array Int Space -> Bool
+isComplete = (== map Just [1..9]) . sort . elems
