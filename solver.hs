@@ -10,10 +10,12 @@ import Data.Array
 import Data.Maybe (isJust)
 import Data.List (nub)
 
-import Puzzle (Space, GenericPuzzle, Puzzle, fromList, row, col, block, rowColBlock)
+import Puzzle (Space, RowCol, GenericPuzzle, Puzzle, fromList, row, col, block, rowColBlock)
+
+type Candidate = Int
 
 -- A type similar to Puzzle, but with a list of candidates for each space.
-type CandidatesPuzzle = GenericPuzzle (Space, [Int])
+type CandidatesPuzzle = GenericPuzzle (Space, [Candidate])
 
 -- Class of functions that try to solve sudoku puzzles.
 -- If the puzzle cannot be solved, the solver should return the last state the
@@ -57,7 +59,7 @@ isComplete = and . fmap (isJust . fst)
 
 -- Updates a puzzle with the given value in the given row and column, and
 -- updates the candidates of all cells in the same row, column, and block.
-updatePuzzle :: (Int, Int) -> Int -> CandidatesPuzzle -> CandidatesPuzzle
+updatePuzzle :: RowCol -> Candidate -> CandidatesPuzzle -> CandidatesPuzzle
 updatePuzzle rc@(rowIndex, colIndex) value puzzle =
   puzzle // updateRowColBlock // [(rc, (Just value, []))]
     where
