@@ -43,6 +43,10 @@ removeCandidates = fmap fst
 toSolver :: CandidatesSolver -> Solver
 toSolver s = removeCandidates . s . addCandidates
 
+-- Checks whether a CandidatesPuzzle is complete.
+isComplete :: CandidatesPuzzle -> Bool
+isComplete = and . fmap (isJust . fst)
+
 -- Updates a puzzle with the given value in the given row and column, and
 -- updates the candidates of all cells in the same row, column, and block.
 updatePuzzle :: CandidatesPuzzle -> (Int, Int) -> Int -> CandidatesPuzzle

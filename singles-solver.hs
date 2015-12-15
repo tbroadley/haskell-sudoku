@@ -2,7 +2,7 @@ module SinglesSolver (
   solve
 ) where
 
-import Solver (CandidatesPuzzle, Solver, CandidatesSolver, toSolver, updatePuzzle)
+import Solver (CandidatesPuzzle, Solver, CandidatesSolver, toSolver, isComplete, updatePuzzle)
 
 import Data.Array
 import Data.Maybe (isJust)
@@ -30,7 +30,3 @@ solveOneStep puzzle = case oneCandidate of
   where
     oneCandidate = filter hasOneCandidate $ assocs puzzle
     hasOneCandidate (_, (_, candidates)) = length candidates == 1
-
--- Checks whether a CandidatesPuzzle is complete.
-isComplete :: CandidatesPuzzle -> Bool
-isComplete = and . fmap (isJust . fst)
