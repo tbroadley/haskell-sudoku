@@ -7,6 +7,7 @@ module Solver (
 ) where
 
 import Data.Array
+import Data.Maybe (isJust)
 
 import Puzzle (Space, GenericPuzzle, Puzzle, fromList, rowColBlock)
 
@@ -20,8 +21,8 @@ type Solver = Puzzle -> Puzzle
 
 -- Class of functions that solve sudoku puzzles using lists of candidates for
 -- each square.
--- If the puzzle cannot be solved, the solver should return the last state the
--- solver was able to solve to.
+-- If the puzzle cannot be solved, the solver should return the same state it
+-- was passed.
 type CandidatesSolver = CandidatesPuzzle -> CandidatesPuzzle
 
 -- Adds candidates to a Puzzle, turning it into a CandidatesPuzzle.
@@ -41,7 +42,13 @@ removeCandidates = fmap fst
 -- Turns a CandidatesSolver into a Solver by combining it with addCandidates
 -- and removeCandidates.
 toSolver :: CandidatesSolver -> Solver
-toSolver s = removeCandidates . s . addCandidates
+toSolver solve = removeCandidates . solveWithCandidates . addCandidates
+  where
+    solveWithCandidates puzzle
+      | isComplete puzzle || puzzle == nextPuzzle = puzzle
+      | otherwise                                 = solveWithCandidates nextPuzzle
+        where
+          nextPuzzle = solve puzzle
 
 -- Checks whether a CandidatesPuzzle is complete.
 isComplete :: CandidatesPuzzle -> Bool
