@@ -2,7 +2,8 @@ module Solver (
   CandidatesPuzzle,
   Solver,
   CandidatesSolver,
-  toSolver
+  toSolver,
+  updatePuzzle
 ) where
 
 import Data.Array
@@ -29,7 +30,7 @@ addCandidates puzzle = fromList $ zipWith (,) spaces candidates
   where
     spaces = elems puzzle
     candidates = map getCandidates $ range ((0, 0), (8, 8))
-    getCandidates rc = case fst $ puzzle ! rc of
+    getCandidates rc = case puzzle ! rc of
       Just _  -> []
       Nothing -> filter (\n -> notElem n $ rowColBlock puzzle rc) [1..9]
 
@@ -41,3 +42,8 @@ removeCandidates = fmap fst
 -- and removeCandidates.
 toSolver :: CandidatesSolver -> Solver
 toSolver s = removeCandidates . s . addCandidates
+
+-- Updates a puzzle with the given value in the given row and column, and
+-- updates the candidates of all cells in the same row, column, and block.
+updatePuzzle :: CandidatesPuzzle -> (Int, Int) -> Int -> CandidatesPuzzle
+updatePuzzle puzzle rc value = puzzle
