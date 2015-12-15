@@ -6,6 +6,7 @@ module Puzzle (
   RowCol,
   GenericPuzzle,
   Puzzle,
+  fromFile,
   fromList,
   row,
   col,
@@ -18,6 +19,7 @@ module Puzzle (
 import Data.Array
 import Data.List (sort, nub, intercalate)
 import Data.Maybe (catMaybes)
+import Data.Char (digitToInt)
 
 type Space = Maybe Int
 
@@ -33,6 +35,16 @@ instance Show Puzzle where
       toStr (Just n) = show n
       group9 [] = []
       group9 l = (take 9 l) : (group9 (drop 9 l))
+
+-- Reads a puzzle from a file.
+fromFile :: FilePath -> IO Puzzle
+fromFile path = do
+  fileContents <- readFile path
+  let oneLine = concat $ lines fileContents
+  let asMaybes = map toMaybe oneLine
+  return $ listArray ((0, 0), (8, 8)) asMaybes
+    where
+      toMaybe c = if c == ' ' then Nothing else Just $ digitToInt c
 
 -- Creates a 9x9 sudoku puzzle from a list of spaces. The spaces should be
 -- indexed by row and then column, i.e. [(1, 1), (1, 2), ... (2, 1), ...].
