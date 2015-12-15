@@ -32,3 +32,11 @@ block puzzle (blockRow, blockCol) =
 -- Checks whether a row, column, or block is complete.
 isComplete :: Array Int Space -> Bool
 isComplete = (== map Just [1..9]) . sort . elems
+
+-- Checks whether a puzzle is solved.
+isSolved :: Puzzle -> Bool
+isSolved puzzle = and . map isComplete $ concat [rows, cols, blocks]
+  where
+    rows = map (row puzzle) [0..8]
+    cols = map (col puzzle) [0..8]
+    blocks = map (block puzzle) $ range ((0, 0), (2, 2))
