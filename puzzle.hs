@@ -18,3 +18,12 @@ row rowIndex puzzle =
 col :: Int -> Puzzle -> Array Int Space
 col colIndex puzzle =
   array (0, 8) [(rowIndex, puzzle ! (rowIndex, colIndex)) | rowIndex <- [0..8]]
+
+-- Returns the contents of a given block of a puzzle.
+block :: (Int, Int) -> Puzzle -> Array Int Space
+block (blockRow, blockCol) puzzle =
+  listArray (0, 8) [puzzle ! index | index <- range blockBounds]
+    where
+      blockBounds = ((startRow, startCol), (startRow + 2, startCol + 2))
+      startRow = blockRow * 3
+      startCol = blockCol * 3
