@@ -1,3 +1,13 @@
+module Puzzle (
+  Space,
+  Puzzle,
+  makePuzzle,
+  row,
+  col,
+  block,
+  isSolved
+) where
+
 import Data.Array
 import Data.List (sort)
 
