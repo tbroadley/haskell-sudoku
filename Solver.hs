@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+
 module Solver (
   CandidatesPuzzle,
   Solver,
@@ -8,7 +11,7 @@ module Solver (
 
 import Data.Array
 import Data.Maybe (isJust)
-import Data.List (nub)
+import Data.List (nub, intercalate)
 
 import Puzzle (Space, RowCol, GenericPuzzle(GP), getPuzzle, Puzzle, fromList, row, col, block, inBlock, rowColBlock)
 
@@ -16,6 +19,15 @@ type Candidate = Int
 
 -- A type similar to Puzzle, but with a list of candidates for each space.
 type CandidatesPuzzle = GenericPuzzle (Space, [Candidate])
+
+instance Show CandidatesPuzzle where
+  show (GP puzzle) =
+    intercalate "\n" . map (intercalate ",") . group9 . map toStr . elems $ puzzle
+      where
+        toStr (Nothing, l) = show l
+        toStr (Just n, _) = show n
+        group9 [] = []
+        group9 l = (take 9 l) : (group9 (drop 9 l))
 
 -- Class of functions that try to solve sudoku puzzles.
 -- If the puzzle cannot be solved, the solver should return the last state the
