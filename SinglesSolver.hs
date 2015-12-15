@@ -18,8 +18,7 @@ solve = toSolver solveOneStep
 solveOneStep :: CandidatesSolver
 solveOneStep p@(GP puzzle) = case oneCandidate of
   []                        -> p
-  ((rc, (Nothing, _)):_)    -> p
-  ((rc, (Just value, _)):_) -> updatePuzzle rc value p
+  ((rc, (Nothing, (value:[]))):_) -> updatePuzzle rc value p
   where
     oneCandidate = filter hasOneCandidate $ assocs puzzle
     hasOneCandidate (_, (_, candidates)) = length candidates == 1
