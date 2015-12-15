@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+
 module Puzzle (
   Space,
   RowCol,
@@ -7,12 +10,13 @@ module Puzzle (
   row,
   col,
   block,
+  inBlock,
   rowColBlock,
   isSolved
 ) where
 
 import Data.Array
-import Data.List (sort, nub)
+import Data.List (sort, nub, intercalate)
 import Data.Maybe (catMaybes)
 
 type Space = Maybe Int
@@ -21,6 +25,14 @@ type RowCol = (Int, Int)
 
 type GenericPuzzle a = Array RowCol a
 type Puzzle = GenericPuzzle Space
+
+instance Show Puzzle where
+  show = intercalate "\n" . map concat . group9 . map toStr . elems
+    where
+      toStr Nothing = " "
+      toStr (Just n) = show n
+      group9 [] = []
+      group9 l = (take 9 l) : (group9 (drop 9 l))
 
 -- Creates a 9x9 sudoku puzzle from a list of spaces. The spaces should be
 -- indexed by row and then column, i.e. [(1, 1), (1, 2), ... (2, 1), ...].
