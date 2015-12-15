@@ -2,9 +2,7 @@ module SinglesSolver (
   solve
 ) where
 
-import Puzzle (Puzzle, Space, isSolved)
-
-import Solver (CandidatesPuzzle, Solver, CandidatesSolver, toSolver)
+import Solver (Solver)
 
 -- Solves a sudoku puzzle in a simple way. For each space, it calculates a list
 -- of candidates. If no space has exactly one candidate, the puzzle cannot be
