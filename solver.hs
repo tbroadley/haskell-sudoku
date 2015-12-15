@@ -29,7 +29,9 @@ addCandidates puzzle = fromList $ zipWith (,) spaces candidates
   where
     spaces = elems puzzle
     candidates = map getCandidates $ range ((0, 0), (8, 8))
-    getCandidates rc = filter (\n -> notElem n $ rowColBlock puzzle rc) [1..9]
+    getCandidates rc = case fst $ puzzle ! rc of
+      Just _  -> []
+      Nothing -> filter (\n -> notElem n $ rowColBlock puzzle rc) [1..9]
 
 -- Removes lists of candidates from the spaces of a puzzle.
 removeCandidates :: CandidatesPuzzle -> Puzzle
