@@ -10,7 +10,7 @@ import Data.Array
 import Data.Maybe (isJust)
 import Data.List (nub)
 
-import Puzzle (Space, RowCol, GenericPuzzle, Puzzle, fromList, row, col, block, inBlock, rowColBlock)
+import Puzzle (Space, RowCol, GenericPuzzle(GP), getPuzzle, Puzzle, fromList, row, col, block, inBlock, rowColBlock)
 
 type Candidate = Int
 
@@ -30,17 +30,17 @@ type CandidatesSolver = CandidatesPuzzle -> CandidatesPuzzle
 
 -- Adds candidates to a Puzzle, turning it into a CandidatesPuzzle.
 addCandidates :: Puzzle -> CandidatesPuzzle
-addCandidates puzzle = fromList $ zipWith (,) spaces candidates
+addCandidates p@(GP puzzle) = fromList $ zipWith (,) spaces candidates
   where
     spaces = elems puzzle
     candidates = map getCandidates $ range ((0, 0), (8, 8))
     getCandidates rc = case puzzle ! rc of
       Just _  -> []
-      Nothing -> filter (\n -> notElem n $ rowColBlock puzzle rc) [1..9]
+      Nothing -> filter (\n -> notElem n $ rowColBlock p rc) [1..9]
 
 -- Removes lists of candidates from the spaces of a puzzle.
 removeCandidates :: CandidatesPuzzle -> Puzzle
-removeCandidates = fmap fst
+removeCandidates = GP . fmap fst . getPuzzle
 
 -- Turns a CandidatesSolver into a Solver by combining it with addCandidates
 -- and removeCandidates.
@@ -55,16 +55,16 @@ toSolver solve = removeCandidates . solveWithCandidates . addCandidates
 
 -- Checks whether a CandidatesPuzzle is complete.
 isComplete :: CandidatesPuzzle -> Bool
-isComplete = and . fmap (isJust . fst)
+isComplete = and . fmap (isJust . fst) . getPuzzle
 
 -- Updates a puzzle with the given value in the given row and column, and
 -- updates the candidates of all cells in the same row, column, and block.
 updatePuzzle :: RowCol -> Candidate -> CandidatesPuzzle -> CandidatesPuzzle
-updatePuzzle rc@(rowIndex, colIndex) value puzzle =
-  puzzle // updateRowColBlock // [(rc, (Just value, []))]
+updatePuzzle rc@(rowIndex, colIndex) value p@(GP puzzle) =
+  GP $ puzzle // updateRowColBlock // [(rc, (Just value, []))]
     where
       updateRowColBlock = map filterValue . nub . concat $ map assocs [r, c, b]
       filterValue (k, (v, candidates)) = (k, (v, filter (== value) candidates))
-      r = row puzzle rowIndex
-      c = col puzzle colIndex
-      b = block puzzle (inBlock rc)
+      r = row p rowIndex
+      c = col p colIndex
+      b = block p (inBlock rc)

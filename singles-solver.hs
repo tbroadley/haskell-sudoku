@@ -2,6 +2,7 @@ module SinglesSolver (
   solve
 ) where
 
+import Puzzle (GenericPuzzle(GP), getPuzzle)
 import Solver (CandidatesPuzzle, Solver, CandidatesSolver, toSolver, updatePuzzle)
 
 import Data.Array
@@ -15,10 +16,10 @@ solve = toSolver solveOneStep
 
 -- Progresses one step in the solution algorithm.
 solveOneStep :: CandidatesSolver
-solveOneStep puzzle = case oneCandidate of
-  []                        -> puzzle
-  ((rc, (Nothing, _)):_)    -> puzzle
-  ((rc, (Just value, _)):_) -> updatePuzzle rc value puzzle 
+solveOneStep p@(GP puzzle) = case oneCandidate of
+  []                        -> p
+  ((rc, (Nothing, _)):_)    -> p
+  ((rc, (Just value, _)):_) -> updatePuzzle rc value p
   where
     oneCandidate = filter hasOneCandidate $ assocs puzzle
     hasOneCandidate (_, (_, candidates)) = length candidates == 1

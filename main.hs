@@ -1,4 +1,4 @@
-import Puzzle (Puzzle, fromFile, toStr, group9)
+import Puzzle (Puzzle, fromFile)
 
 -- testFile :: IO Puzzle
 testFile = fromFile "test.txt"

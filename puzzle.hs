@@ -4,7 +4,8 @@
 module Puzzle (
   Space,
   RowCol,
-  GenericPuzzle,
+  GenericPuzzle(GP),
+  getPuzzle,
   Puzzle,
   fromFile,
   fromList,
@@ -25,16 +26,18 @@ type Space = Maybe Int
 
 type RowCol = (Int, Int)
 
-type GenericPuzzle a = Array RowCol a
+data GenericPuzzle a = GP { getPuzzle :: Array RowCol a }
+  deriving (Eq)
 type Puzzle = GenericPuzzle Space
 
 instance Show Puzzle where
-  show = intercalate "\n" . map concat . group9 . map toStr . elems
-    where
-      toStr Nothing = " "
-      toStr (Just n) = show n
-      group9 [] = []
-      group9 l = (take 9 l) : (group9 (drop 9 l))
+  show (GP puzzle) =
+    intercalate "\n" . map concat . group9 . map toStr . elems $ puzzle
+      where
+        toStr Nothing = " "
+        toStr (Just n) = show n
+        group9 [] = []
+        group9 l = (take 9 l) : (group9 (drop 9 l))
 
 -- Reads a puzzle from a file.
 fromFile :: FilePath -> IO Puzzle
@@ -42,28 +45,28 @@ fromFile path = do
   fileContents <- readFile path
   let oneLine = concat $ lines fileContents
   let asMaybes = map toMaybe oneLine
-  return $ listArray ((0, 0), (8, 8)) asMaybes
+  return . GP $ listArray ((0, 0), (8, 8)) asMaybes
     where
       toMaybe c = if c == '.' then Nothing else Just $ digitToInt c
 
 -- Creates a 9x9 sudoku puzzle from a list of spaces. The spaces should be
 -- indexed by row and then column, i.e. [(1, 1), (1, 2), ... (2, 1), ...].
 fromList :: [a] -> GenericPuzzle a
-fromList = listArray ((0, 0), (8, 8))
+fromList = GP . listArray ((0, 0), (8, 8))
 
 -- Returns the contents of a given row of a puzzle.
 row :: GenericPuzzle a -> Int -> Array RowCol a
-row puzzle ri =
+row (GP puzzle) ri =
   array ((ri, 0), (ri, 8)) [((ri, ci), puzzle ! (ri, ci)) | ci <- [0..8]]
 
 -- Returns the contents of a given column of a puzzle.
 col :: GenericPuzzle a -> Int -> Array RowCol a
-col puzzle ci =
+col (GP puzzle) ci =
   array ((0, ci), (8, ci)) [((ri, ci), puzzle ! (ri, ci)) | ri <- [0..8]]
 
 -- Returns the contents of a given block of a puzzle.
 block :: GenericPuzzle a -> RowCol -> Array RowCol a
-block puzzle (blockRow, blockCol) =
+block (GP puzzle) (blockRow, blockCol) =
   listArray blockBounds [puzzle ! index | index <- range blockBounds]
     where
       blockBounds = ((startRow, startCol), (startRow + 2, startCol + 2))
