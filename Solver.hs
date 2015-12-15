@@ -64,7 +64,7 @@ updatePuzzle rc@(rowIndex, colIndex) value p@(GP puzzle) =
   GP $ puzzle // updateRowColBlock // [(rc, (Just value, []))]
     where
       updateRowColBlock = map filterValue . nub . concat $ map assocs [r, c, b]
-      filterValue (k, (v, candidates)) = (k, (v, filter (== value) candidates))
+      filterValue (k, (v, candidates)) = (k, (v, filter (/= value) candidates))
       r = row p rowIndex
       c = col p colIndex
       b = block p (inBlock rc)
