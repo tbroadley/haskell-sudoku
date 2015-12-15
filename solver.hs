@@ -7,14 +7,14 @@ module Solver (
 
 import Data.Array
 
-import Puzzle (Space, Puzzle, fromList, rowColBlock)
+import Puzzle (Space, GenericPuzzle, Puzzle, fromList, rowColBlock)
 
 -- A type similar to Puzzle, but with a list of candidates for each space.
-type CandidatesPuzzle = Array (Int, Int) (Space, [Int])
+type CandidatesPuzzle = GenericPuzzle (Space, [Int])
 
 -- Class of functions that try to solve sudoku puzzles.
 -- If the puzzle cannot be solved, the solver should return Nothing.
-type Solver = Puzzle -> Maybe Puzzle
+type Solver = Puzzle -> Maybe (Puzzle)
 
 -- Class of functions that solve sudoku puzzles using lists of candidates for
 -- each square.
@@ -22,7 +22,7 @@ type Solver = Puzzle -> Maybe Puzzle
 type CandidatesSolver = CandidatesPuzzle -> Maybe CandidatesPuzzle
 
 -- Adds candidates to a Puzzle, turning it into a CandidatesPuzzle.
--- addCandidates :: Puzzle -> CandidatesPuzzle
+addCandidates :: Puzzle -> CandidatesPuzzle
 addCandidates puzzle = fromList $ zipWith (,) spaces candidates
   where
     spaces = elems puzzle

@@ -1,5 +1,6 @@
 module Puzzle (
   Space,
+  GenericPuzzle,
   Puzzle,
   fromList,
   row,
@@ -15,25 +16,26 @@ import Data.Maybe (catMaybes)
 
 type Space = Maybe Int
 
-type Puzzle = Array (Int, Int) Space
+type GenericPuzzle a = Array (Int, Int) a
+type Puzzle = GenericPuzzle Space
 
 -- Creates a 9x9 sudoku puzzle from a list of spaces. The spaces should be
 -- indexed by row and then column, i.e. [(1, 1), (1, 2), ... (2, 1), ...].
-fromList :: [a] -> Array (Int, Int) a
+fromList :: [a] -> GenericPuzzle a
 fromList = listArray ((0, 0), (8, 8))
 
 -- Returns the contents of a given row of a puzzle.
-row :: Puzzle -> Int -> Array Int Space
+row :: GenericPuzzle a -> Int -> Array Int a
 row puzzle rowIndex =
   listArray (0, 8) [puzzle ! (rowIndex, colIndex) | colIndex <- [0..8]]
 
 -- Returns the contents of a given column of a puzzle.
-col :: Puzzle -> Int -> Array Int Space
+col :: GenericPuzzle a -> Int -> Array Int a
 col puzzle colIndex =
   listArray (0, 8) [puzzle ! (rowIndex, colIndex) | rowIndex <- [0..8]]
 
 -- Returns the contents of a given block of a puzzle.
-block :: Puzzle -> (Int, Int) -> Array Int Space
+block :: GenericPuzzle a -> (Int, Int) -> Array Int a
 block puzzle (blockRow, blockCol) =
   listArray (0, 8) [puzzle ! index | index <- range blockBounds]
     where
