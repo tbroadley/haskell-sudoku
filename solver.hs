@@ -8,8 +8,9 @@ module Solver (
 
 import Data.Array
 import Data.Maybe (isJust)
+import Data.List (nub)
 
-import Puzzle (Space, GenericPuzzle, Puzzle, fromList, rowColBlock)
+import Puzzle (Space, GenericPuzzle, Puzzle, fromList, row, col, block, rowColBlock)
 
 -- A type similar to Puzzle, but with a list of candidates for each space.
 type CandidatesPuzzle = GenericPuzzle (Space, [Int])
@@ -57,4 +58,11 @@ isComplete = and . fmap (isJust . fst)
 -- Updates a puzzle with the given value in the given row and column, and
 -- updates the candidates of all cells in the same row, column, and block.
 updatePuzzle :: (Int, Int) -> Int -> CandidatesPuzzle -> CandidatesPuzzle
-updatePuzzle rc value puzzle = puzzle
+updatePuzzle rc@(rowIndex, colIndex) value puzzle =
+  puzzle // updateRowColBlock // [(rc, (Just value, []))]
+    where
+      updateRowColBlock = map filterValue . nub . concat $ map assocs [r, c, b]
+      filterValue (k, (v, candidates)) = (k, (v, filter (== value) candidates))
+      r = row puzzle rowIndex
+      c = col puzzle colIndex
+      b = block puzzle (rowIndex `div` 3, colIndex `div` 3)
