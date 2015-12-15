@@ -23,12 +23,12 @@ fromList = listArray ((0, 0), (8, 8))
 -- Returns the contents of a given row of a puzzle.
 row :: Puzzle -> Int -> Array Int Space
 row puzzle rowIndex =
-  array (0, 8) [(colIndex, puzzle ! (rowIndex, colIndex)) | colIndex <- [0..8]]
+  listArray (0, 8) [puzzle ! (rowIndex, colIndex) | colIndex <- [0..8]]
 
 -- Returns the contents of a given column of a puzzle.
 col :: Puzzle -> Int -> Array Int Space
 col puzzle colIndex =
-  array (0, 8) [(rowIndex, puzzle ! (rowIndex, colIndex)) | rowIndex <- [0..8]]
+  listArray (0, 8) [puzzle ! (rowIndex, colIndex) | rowIndex <- [0..8]]
 
 -- Returns the contents of a given block of a puzzle.
 block :: Puzzle -> (Int, Int) -> Array Int Space
