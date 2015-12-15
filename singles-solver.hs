@@ -18,7 +18,7 @@ solveOneStep :: CandidatesSolver
 solveOneStep puzzle = case oneCandidate of
   []                        -> puzzle
   ((rc, (Nothing, _)):_)    -> puzzle
-  ((rc, (Just value, _)):_) -> updatePuzzle puzzle rc value
+  ((rc, (Just value, _)):_) -> updatePuzzle rc value puzzle 
   where
     oneCandidate = filter hasOneCandidate $ assocs puzzle
     hasOneCandidate (_, (_, candidates)) = length candidates == 1
