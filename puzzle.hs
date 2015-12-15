@@ -25,19 +25,19 @@ fromList :: [a] -> GenericPuzzle a
 fromList = listArray ((0, 0), (8, 8))
 
 -- Returns the contents of a given row of a puzzle.
-row :: GenericPuzzle a -> Int -> Array Int a
-row puzzle rowIndex =
-  listArray (0, 8) [puzzle ! (rowIndex, colIndex) | colIndex <- [0..8]]
+row :: GenericPuzzle a -> Int -> Array (Int, Int) a
+row puzzle ri =
+  array ((ri, 0), (ri, 8)) [((ri, ci), puzzle ! (ri, ci)) | ci <- [0..8]]
 
 -- Returns the contents of a given column of a puzzle.
-col :: GenericPuzzle a -> Int -> Array Int a
-col puzzle colIndex =
-  listArray (0, 8) [puzzle ! (rowIndex, colIndex) | rowIndex <- [0..8]]
+col :: GenericPuzzle a -> Int -> Array (Int, Int) a
+col puzzle ci =
+  array ((0, ci), (8, ci)) [((ri, ci), puzzle ! (ri, ci)) | ri <- [0..8]]
 
 -- Returns the contents of a given block of a puzzle.
-block :: GenericPuzzle a -> (Int, Int) -> Array Int a
+block :: GenericPuzzle a -> (Int, Int) -> Array (Int, Int) a
 block puzzle (blockRow, blockCol) =
-  listArray (0, 8) [puzzle ! index | index <- range blockBounds]
+  listArray blockBounds [puzzle ! index | index <- range blockBounds]
     where
       blockBounds = ((startRow, startCol), (startRow + 2, startCol + 2))
       startRow = blockRow * 3
@@ -54,7 +54,7 @@ rowColBlock puzzle (rowIndex, colIndex) =
       b = block puzzle (rowIndex `div` 3, colIndex `div` 3)
 
 -- Checks whether a row, column, or block is complete.
-isComplete :: Array Int Space -> Bool
+isComplete :: Array (Int, Int) Space -> Bool
 isComplete = (== map Just [1..9]) . sort . elems
 
 -- Checks whether a puzzle is solved.
