@@ -1,7 +1,7 @@
 module Puzzle (
   Space,
   Puzzle,
-  makePuzzle,
+  fromList,
   row,
   col,
   block,
@@ -17,8 +17,8 @@ type Puzzle = Array (Int, Int) Space
 
 -- Creates a 9x9 sudoku puzzle from a list of spaces. The spaces should be
 -- indexed by row and then column, i.e. [(1, 1), (1, 2), ... (2, 1), ...].
-makePuzzle :: [Space] -> Puzzle
-makePuzzle = listArray ((0, 0), (8, 8))
+fromList :: [Space] -> Puzzle
+fromList = listArray ((0, 0), (8, 8))
 
 -- Returns the contents of a given row of a puzzle.
 row :: Puzzle -> Int -> Array Int Space
