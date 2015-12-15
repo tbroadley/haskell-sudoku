@@ -4,6 +4,6 @@ module Solver (
 
 import Puzzle (Space, Puzzle)
 
--- Solves a sudoku puzzle. If the puzzle cannot be solved, returns Nothing.
-solve :: Puzzle -> Maybe Puzzle
-solve = Just
+-- Class of functions that try to solve sudoku puzzles.
+-- If the puzzle cannot be solved, the solver should return Nothing.
+type Solver = Puzzle -> Maybe Puzzle
