@@ -13,13 +13,15 @@ import Puzzle (Space, GenericPuzzle, Puzzle, fromList, rowColBlock)
 type CandidatesPuzzle = GenericPuzzle (Space, [Int])
 
 -- Class of functions that try to solve sudoku puzzles.
--- If the puzzle cannot be solved, the solver should return Nothing.
-type Solver = Puzzle -> Maybe (Puzzle)
+-- If the puzzle cannot be solved, the solver should return the last state the
+-- solver was able to solve to.
+type Solver = Puzzle -> Puzzle
 
 -- Class of functions that solve sudoku puzzles using lists of candidates for
 -- each square.
--- If the puzzle cannot be solved, the solver should return Nothing.
-type CandidatesSolver = CandidatesPuzzle -> Maybe CandidatesPuzzle
+-- If the puzzle cannot be solved, the solver should return the last state the
+-- solver was able to solve to.
+type CandidatesSolver = CandidatesPuzzle -> CandidatesPuzzle
 
 -- Adds candidates to a Puzzle, turning it into a CandidatesPuzzle.
 addCandidates :: Puzzle -> CandidatesPuzzle
@@ -36,4 +38,4 @@ removeCandidates = fmap fst
 -- Turns a CandidatesSolver into a Solver by combining it with addCandidates
 -- and removeCandidates.
 toSolver :: CandidatesSolver -> Solver
-toSolver s = (>>= return . removeCandidates) . s . addCandidates
+toSolver s = removeCandidates . s . addCandidates

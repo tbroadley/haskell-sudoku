@@ -14,15 +14,15 @@ solve :: Solver
 solve = toSolver solveWithCandidates
 
 solveWithCandidates :: CandidatesSolver
-solveWithCandidates puzzle = do
-  nextPuzzle <- solveOneStep puzzle
-  if isComplete nextPuzzle
-    then return nextPuzzle
-    else solveWithCandidates nextPuzzle
+solveWithCandidates puzzle
+  | isComplete puzzle || puzzle == nextPuzzle = puzzle
+  | otherwise                                 = solveWithCandidates nextPuzzle
+    where
+      nextPuzzle = solveOneStep puzzle
 
 -- Progresses one step in the solution algorithm.
 solveOneStep :: CandidatesSolver
-solveOneStep = Just
+solveOneStep = id
 
 -- Checks whether a CandidatesPuzzle is complete.
 isComplete :: CandidatesPuzzle -> Bool
